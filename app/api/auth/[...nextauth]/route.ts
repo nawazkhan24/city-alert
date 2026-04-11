@@ -29,8 +29,10 @@ export const authOptions: any = {
 
         if (!isMatch) throw new Error("Wrong password");
 
+        // ✅ RETURN NAME ALSO
         return {
           id: user._id.toString(),
+          name: user.name,   
           email: user.email,
         };
       },
@@ -43,13 +45,19 @@ export const authOptions: any = {
 
   callbacks: {
     async jwt({ token, user }: any) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;    
+        token.email = user.email;
+      }
       return token;
     },
 
     async session({ session, token }: any) {
       if (session.user) {
         session.user.id = token.id;
+        session.user.name = token.name;   
+        session.user.email = token.email;
       }
       return session;
     },

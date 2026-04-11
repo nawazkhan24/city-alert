@@ -6,88 +6,78 @@ import { useRouter } from "next/navigation";
 export default function Register() {
   const router = useRouter();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [city, setCity] = useState("");
-  const [keyword, setKeyword] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    city: "",
+    keyword: "",
+  });
+
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const submit = async () => {
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          city,
-          keyword,
-        }),
-      });
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(form),
+    });
 
-      const data = await res.json(); // 🔥 important
-
-      if (res.ok) {
-        alert("Registered successfully");
-        router.push("/login");
-      } else {
-        alert(data.error || "Something went wrong"); // 🔥 real error
-      }
-    } catch (err) {
-      console.log("Error:", err);
-      alert("Server error");
-    }
+    if (res.ok) router.push("/login");
+    else alert("Failed");
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow w-96">
-        <h1 className="text-xl mb-4 font-bold">Register</h1>
+    <div className="min-h-screen bg-black text-white flex">
 
-        <input
-          className="border p-2 w-full mb-3"
-          placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
-        />
+      {/* LEFT */}
+      <div className="w-1/2 flex flex-col justify-center px-16">
+        <h1 className="text-5xl font-bold mb-6">
+          Stay updated with <br /> your city alerts
+        </h1>
 
-        <input
-          className="border p-2 w-full mb-3"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <p className="text-gray-400 mb-8">
+          Choose your city and keywords — we’ll notify you instantly.
+        </p>
+      </div>
 
-        <input
-          className="border p-2 w-full mb-3"
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      {/* RIGHT FORM */}
+      <div className="w-1/2 flex items-center justify-center ">
 
-        <select
-          className="border p-2 w-full mb-3"
-          onChange={(e) => setCity(e.target.value)}
-        >
-          <option value="">Select City</option>
-          <option>Delhi</option>
-          <option>Mumbai</option>
-          <option>Ghaziabad</option>
-        </select>
+        <div className="bg-white/10 backdrop-blur-xl p-8 rounded-2xl w-96 border border-white/20">
 
-        <input
-          className="border p-2 w-full mb-3"
-          placeholder="Keyword (road, park...)"
-          onChange={(e) => setKeyword(e.target.value)}
-        />
+          <h2 className="text-2xl mb-6">Register</h2>
 
-        <button
-          onClick={submit}
-          className="bg-black text-white w-full p-2 rounded"
-        >
-          Register
-        </button>
+          <input name="name" placeholder="Name" onChange={handleChange}
+            className="w-full p-2 mb-3 bg-white/20 rounded"/>
+
+          <input name="email" placeholder="Email" onChange={handleChange}
+            className="w-full p-2 mb-3 bg-white/20 rounded"/>
+
+          <input name="password" type="password" placeholder="Password"
+            onChange={handleChange}
+            className="w-full p-2 mb-3 bg-white/20 rounded"/>
+
+          <select name="city" onChange={handleChange}
+            className="w-full p-2 mb-3 bg-white/20 rounded">
+            <option value="" className="text-black" >Select City</option>
+            <option className="bg-gray-500" >Delhi</option>
+            <option className="bg-gray-500">Mumbai</option>
+            <option className="bg-gray-500" >Ghaziabad</option>
+          </select>
+
+          <input name="keyword" placeholder="Keyword"
+            onChange={handleChange}
+            className="w-full p-2 mb-4 bg-white/20 rounded"/>
+
+          <button onClick={submit}
+            className="w-full bg-white text-black p-2 rounded-lg">
+            Register
+          </button>
+
+        </div>
       </div>
     </div>
   );
