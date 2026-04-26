@@ -8,7 +8,7 @@ export async function GET() {
 
   const session: any = await getServerSession(authOptions);
 
-  if (!session?.user?.id) {
+  if (!session || !session.user) {
     return Response.json({ error: "Not logged in" }, { status: 401 });
   }
 
