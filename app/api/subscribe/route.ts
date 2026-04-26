@@ -12,8 +12,13 @@ export async function POST(req: Request) {
 
   const cityObj = cities.find(c => c.name === city);
   const results = await scrapeCity(cityObj!.website, keyword);
-
-  await sendMail(email, results);
+await sendMail(
+  email,
+  city,
+  keyword,
+  results,
+  cityObj!.website
+);
 
   return Response.json({ results });
 }
